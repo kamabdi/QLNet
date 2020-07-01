@@ -8,7 +8,7 @@ from torchvision import datasets, transforms
 
 from load_data import get_data
 from baseline_model import BS_Net
-from train import train, test
+from train_utils import train, test
 from  training_parameters import get_params
 
 args = get_params()
