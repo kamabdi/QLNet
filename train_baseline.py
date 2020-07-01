@@ -28,9 +28,9 @@ model = BS_Net()
 model.to(device)
 
 args.out_name = 'mnist_baseline.pth'
-# train(model,train_loader, test_loader, args, device)
+train(model,train_loader, test_loader, args, device)
 
-model = BS_Net()
-model.load_state_dict(torch.load('mnist_baseline.pth'))
-model.to(device).eval()
-test(model, test_loader, device,  0, None)
+# model = BS_Net()
+# model.load_state_dict(torch.load('mnist_baseline.pth'))
+# model.to(device).eval()
+# test(model, test_loader, device,  0, None)
