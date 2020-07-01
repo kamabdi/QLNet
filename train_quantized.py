@@ -31,7 +31,7 @@ model.to(device).eval()
 layer_id = 1
 layer = 'layer' + str(layer_id)
 tree = torch.load('tree_' + layer)
-nodes = np.asarray([tree[i].centroid for i in xrange (0, np.shape(tree)[0])])
+nodes = np.asarray([tree[i].centroid for i in range (0, np.shape(tree)[0])])
 
 lookup_table = torch.FloatTensor(nodes).to(device).unsqueeze(0)
 # lookup_table = torch.FloatTensor(nodes).to(device)

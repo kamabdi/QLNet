@@ -25,7 +25,7 @@ class Stack:
 def addNode(centroids, tree, parent, depth, node_id,stack, data, labels):
         n = np.shape(centroids)[0]
 
-        for i in xrange(0, n):
+        for i in range(0, n):
             if i==0: # first node
                 tree.append(Node(parent, None, (node_id+1), None, centroids[i]))
             elif i==n-1: # last node
@@ -116,7 +116,7 @@ def predict_image(tree, data):
 
         best_node, smallest_distance, nodes = measure_distance(current_node, data, tree, smallest_distance)
         nodes = nodes.view(nodes.size()[1], nodes.size()[2])
-        result = torch.stack([nodes[best_node[i]] for i in xrange (0, np.shape(best_node)[0])])
+        result = torch.stack([nodes[best_node[i]] for i in range (0, np.shape(best_node)[0])])
         return result, best_node
 
 

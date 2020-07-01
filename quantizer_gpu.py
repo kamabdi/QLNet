@@ -20,12 +20,12 @@ class Quantizer(Function):
     @staticmethod
     def forward(self,  input, ifTraining, tree, lookup_table):
         input_size = input.size()
-        if self.ifTraining:
+        if ifTraining:
             # print "Quantizing during training "
             output = quantize(input, tree)
         else:
             # If testing then just precomputed value = conv(center, weights)
-            output = self.lookup(input, weights, self.tree, self.lookup_table)
+            output = self.lookup(input, weights, tree, lookup_table)
         self.save_for_backward(input)
         return output
 
@@ -78,13 +78,13 @@ def quantize(input, tree):
             kernel = 1
 
         new_stride = kernel
-        N = (m + 2*p - kernel)/stride + 1
+        N = int((m + 2*p - kernel)/stride + 1)
         output = input.new_zeros((batch_size, depth, kernel*N, kernel*N))
         if p > 0:
             input = F.pad(input, (p,p,p,p))
 
-        for x in xrange(0, N):
-            for y in xrange (0,N):
+        for x in range(0, N):
+            for y in range (0,N):
                 x_step = x*stride
                 y_step = y*stride
                 xx_step = x*new_stride # step in upsampled image
