@@ -2,9 +2,6 @@
 File to load data
 ifTrain =True -> load train set
         = False -> load test set
-
-TODO !!!
-Add other datasets
 '''
 import torch
 import torchvision
@@ -22,14 +19,14 @@ def get_data(args, dataset='mnist', ifTrain=True):
     return dataSet
 
 def get_mnist(args, ifTrain):
-    kwargs = {'num_workers': 1, 'pin_memory': True} if args.cuda else {}
+    kwargs = {'num_workers': 1, 'pin_memory': True} if torch.cuda.is_available() else {}
     loader = torch.utils.data.DataLoader(
         datasets.MNIST('./data', train=ifTrain, download=True,
                        transform=transforms.Compose([
                            transforms.ToTensor(),
                            transforms.Normalize((0.1307,), (0.3081,))
                        ])),
-        batch_size=args.batch_size, shuffle=True, **kwargs)
+        batch_size=args.batch_size, shuffle=ifTrain, **kwargs)
     return loader
 
 def get_cifar10(args, ifTrain):
@@ -40,5 +37,5 @@ def get_cifar10(args, ifTrain):
                            transforms.ToTensor(),
                            transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
                        ])),
-        batch_size=args.batch_size, shuffle=True, **kwargs)
+        batch_size=args.batch_size, shuffle=ifTrain, **kwargs)
     return loader

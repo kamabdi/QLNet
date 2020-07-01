@@ -13,13 +13,12 @@ class BS_Net(nn.Module):
         self.bn3 = nn.BatchNorm1d(50)
         self.activation = nn.ReLU()
 
-    def forward(self, x):
-        x = self.activation(F.max_pool2d(self.bn1(self.conv1(x)), 2))
-        x = self.activation(F.max_pool2d(self.bn2(self.conv2(x)), 2))
+    def forward(self, x, n=0):
+        layer1 = self.activation(F.max_pool2d(self.bn1(self.conv1(x)), 2))
+        layer2 = self.activation(F.max_pool2d(self.bn2(self.conv2(layer1)), 2))
 
-        x = x.view(-1, 16*20) # flatten input to feed it to fully connected layer
+        x = layer2.view(-1, 16*20) # flatten input to feed it to fully connected layer
         x = self.activation(self.bn3(self.fc1(x)))
         x = F.dropout(x, p=0.25)
         x = self.fc2(x)
-        # return F.log_softmax(x)
-        return x
+        return x, [layer1, layer2]
