@@ -35,7 +35,7 @@ def addNode(centroids, tree, parent, depth, node_id,stack, data, labels):
 
             stack, density = splitData(stack, data, labels, depth,node_id , i)
             tree[node_id].density = density
-            print 'Node id ' + str(node_id) + ' Density: ' + str(density)
+            print('Node id ' + str(node_id) + ' Density: ' + str(density))
             node_id = node_id+1
         return tree, stack, node_id
 

@@ -15,7 +15,7 @@ def accuracy(output, target, topk=(1,)):
     res = []
     for k in topk:
         correct_k = correct[:k].view(-1).sum(0)
-        res.append(correct_k/batch_size)
+        res.append(100*correct_k/batch_size)
     return res
 
 def adjust_learning_rate(lr, optimizer, epoch):

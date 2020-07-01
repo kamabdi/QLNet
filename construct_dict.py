@@ -10,7 +10,7 @@ from qlnet_model import BS_Net
 from  training_parameters import get_params
 
 from load_data import get_data
-from train import train, test
+from train_utils import train, test
 from  training_parameters import get_params
 
 def if_exist(path):
@@ -35,7 +35,7 @@ for batch_idx, (data, target) in enumerate(train_loader):
     data, target = data.to(device), target.to(device)
     _, activations = model(data)
     activation = activations[0].cpu().data.numpy()
-    torch.save(activation, activation_folder + layer + '_'+str(batch_idx)+'.npy')
+    torch.save(activation, os.path.join(activation_folder, layer + '_'+str(batch_idx)+'.npy'))
     if batch_idx>6:break
 
 # 3 Construct Look-up Dictionary
@@ -45,8 +45,8 @@ density = 30
 max_depth = 1
 
 # Load activations
-print 'Load activations'
+print('Load activations')
 data = la.load_data(activation_folder) # load patched data
-print 'Constract tree'
+print('Constract tree')
 tree = ht.construct(data, n_cl, density, max_depth)
 torch.save(tree, 'tree_' + layer)

@@ -1,3 +1,5 @@
+./activations/*
+./data/*
 *.csv
 *.eps
 # Byte-compiled / optimized / DLL files
