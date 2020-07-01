@@ -24,7 +24,8 @@ def adjust_learning_rate(lr, optimizer, epoch):
     for param_group in optimizer.param_groups:
         param_group['lr'] = lr
 
-def train(net,trainloader, testloader, num_epoch, lr, device, layer_id, tree):
+def train(net,trainloader, testloader, args, device, layer_id=0, tree=None):
+    num_epoch, lr = args.epochs+1, args.lr
     criterion = nn.CrossEntropyLoss() #
     optimizer = optim.SGD(net.parameters(), lr=lr, momentum=0.9, weight_decay=5e-4)
     best = 0.0
@@ -33,12 +34,11 @@ def train(net,trainloader, testloader, num_epoch, lr, device, layer_id, tree):
         adjust_learning_rate(lr, optimizer, epoch)
         running_loss = 0.0
         for i, (inputs, labels) in enumerate(trainloader, 0):
-            inputs = inputs.to(device)
-            labels = labels.to(device)
+            inputs, labels = inputs.to(device), labels.to(device)
             # zero the parameter gradients
             optimizer.zero_grad()
             # forward + backward + optimize
-            outputs = net(inputs, n=layer_id, tree=tree)
+            outputs, _ = net(inputs, n=layer_id, tree=tree)
             loss = criterion(outputs, labels)
             loss.backward()
             optimizer.step()
@@ -52,7 +52,7 @@ def train(net,trainloader, testloader, num_epoch, lr, device, layer_id, tree):
         score = test(net, testloader, device, layer_id, tree)
         if score > best:
             print("Saving model")
-            torch.save(net.state_dict(), 'mnist_ql_layer'+str(layer_id)+'.pth')
+            torch.save(net.state_dict(), args.out_name)
             best = score
         print("---------------------------")
     print('Finished Training')
@@ -66,7 +66,7 @@ def test(net, testloader, device, layer_id, tree):
     for (images, labels) in testloader:
         images, labels = images.to(device), labels.to(device)
         with torch.no_grad():
-            outputs = net(images, n=layer_id, tree=tree)
+            outputs, _ = net(images, n=layer_id, tree=tree)
         _, predicted = torch.max(outputs.data, 1)
         total += labels.size(0)
         correct += (predicted == labels).sum()

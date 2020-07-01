@@ -6,11 +6,13 @@ from torch.autograd import Variable
 import torch.nn as nn
 import load_activations as la
 import hierarhical_tree_gpu as ht
-from qlnet_model import BS_Net
-from  training_parameters import get_params
+
+
 
 from load_data import get_data
-from train_utils import train, test
+# from train_utils import train, test
+from qlnet_model_quantized import BS_Net
+from train_utils_quantized import train, test
 from  training_parameters import get_params
 
 def if_exist(path):

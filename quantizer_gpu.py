@@ -90,25 +90,11 @@ def quantize(input, tree):
                 xx_step = x*new_stride # step in upsampled image
                 yy_stride = y*new_stride
 
-                if depth == 10:
-                    patch = input[:, : , x_step:x_step+kernel, y_step:y_step+kernel]
-                    patch = patch.contiguous().view(batch_size, 1, kernel*kernel*depth)
-                    center, center_id = ht.predict(tree, patch)
-                    center = center.view([batch_size, depth, kernel, kernel])
-                    output[:, :, xx_step:xx_step+kernel, yy_stride:yy_stride+kernel] = center
-
-                else:
-                    # if the tensor is too deep, we split even more for better approximation
-                    patch = input[:, 0:depth/2 , x_step:x_step+kernel, y_step:y_step+kernel]
-                    patch = patch.contiguous().view(batch_size, 1, kernel*kernel*depth/2)
-                    center, center_id = ht.predict(tree, patch)
-                    center = center.view([batch_size, depth/2, kernel, kernel])
-                    output[:, 0:depth/2, xx_step:xx_step+kernel, yy_stride:yy_stride+kernel] = center # copy approximation to upsampled image
-
-                    patch = input[:, depth/2: , x_step:x_step+kernel, y_step:y_step+kernel]
-                    patch = patch.contiguous().view(batch_size, 1, kernel*kernel*depth/2)
-                    center, center_id = ht.predict(tree, patch)
-                    center = center.view([batch_size, depth/2, kernel, kernel])
-                    output[:, depth/2:, xx_step:xx_step+kernel, yy_stride:yy_stride+kernel] = center
-
+                # if depth == 10:
+                patch = input[:, : , x_step:x_step+kernel, y_step:y_step+kernel]
+                patch = patch.contiguous().view(batch_size, 1, kernel*kernel*depth)
+                center, center_id = ht.predict(tree, patch)
+                center = center.view([batch_size, depth, kernel, kernel])
+                output[:, :, xx_step:xx_step+kernel, yy_stride:yy_stride+kernel] = center
+                
         return output

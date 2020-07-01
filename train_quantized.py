@@ -36,7 +36,7 @@ nodes = np.asarray([tree[i].centroid for i in range (0, np.shape(tree)[0])])
 lookup_table = torch.FloatTensor(nodes).to(device).unsqueeze(0)
 # lookup_table = torch.FloatTensor(nodes).to(device)
 print(lookup_table.size())
-train(model,train_loader, test_loader, args.epochs + 1, args.lr, device, layer_id, [lookup_table])
-
+args.out_name = 'mnist_ql_layer'+str(layer_id)+'.pth'
+train(model,train_loader, test_loader, args, device, layer_id=layer_id, tree=[lookup_table])
 
 # test(model, test_loader, device)

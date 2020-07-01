@@ -1,4 +1,3 @@
-
 """
 Created on Sat Jan  7 14:53:57 2017
 
@@ -11,7 +10,6 @@ Load data(all .npy) for layer layer in data_folder
 Choose patch pick num_regions=2  3x3xdepth regions and reshape data
     Input: data - batchxdepthxwidthxheight
     Output: Reshaped array of selected patches - nxm
-
 """
 
 import numpy as np
@@ -62,27 +60,17 @@ def choose_single_patch(data):
 
 def read_data(data_folder):
     selected_data = []
-
     for file in os.listdir(data_folder):
         if file.endswith("0.npy")  or file.endswith("2.npy")or file.endswith("3.npy")or file.endswith("4.npy") or file.endswith("5.npy"):
-        #if file.endswith("0.npy"):
-
-            #        if file.endswith("100.npy"):
-
-            data_var = t.load(data_folder +file)
-            #data_arr = data_var.data.numpy()
+            data_var = t.load(os.path.join(data_folder, file))
             selected_data.append(data_var)
-            #print np.shape(selected_data)
-
     return selected_data
 
 
 def load_data(data_folder):
     selected_data = read_data(data_folder)
     dimention = np.shape(selected_data)
-
     print('Dimention of data ' + str(dimention))
-
     if len(dimention)==5:
         n = dimention[0]*dimention[1]
         selected_data = np.reshape(selected_data, (n,dimention[2],dimention[3],dimention[4]))
@@ -97,7 +85,4 @@ def load_data(data_folder):
         selected_data = choose_patch(selected_data)
 
     dimention = np.shape(selected_data)
-
-   # print dimention
-
     return selected_data

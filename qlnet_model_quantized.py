@@ -5,12 +5,12 @@ from quantizer_gpu import Quantizer
 class BS_Net(nn.Module):
     def __init__(self):
         super(BS_Net, self).__init__()
-        self.conv1 = nn.Conv2d(1, 10, kernel_size=5)
-        self.conv2 = nn.Conv2d(10, 20, kernel_size=5)
-        self.fc1 = nn.Linear(16*20, 50) # Fully Connected Layers
+        self.conv1 = nn.Conv2d(1, 20, kernel_size=5)
+        self.conv2 = nn.Conv2d(20, 40, kernel_size=5)
+        self.fc1 = nn.Linear(16*40, 50) # Fully Connected Layers
         self.fc2 = nn.Linear(50, 10)
-        self.bn1 = nn.BatchNorm2d(10)
-        self.bn2 = nn.BatchNorm2d(20)
+        self.bn1 = nn.BatchNorm2d(20)
+        self.bn2 = nn.BatchNorm2d(40)
         self.bn3 = nn.BatchNorm1d(50)
         self.activation = nn.ReLU()
 
@@ -21,11 +21,11 @@ class BS_Net(nn.Module):
 
         layer2 = self.activation(F.max_pool2d(self.bn2(self.conv2(layer1)), 2))
 
-        x = layer2.view(-1, 16*20) # flatten input to feed it to fully connected layer
+        x = layer2.view(-1, 16*40) # flatten input to feed it to fully connected layer
         x = self.activation(self.bn3(self.fc1(x)))
         x = F.dropout(x, p=0.25)
         x = self.fc2(x)
-        return x
+        return x, [layer1, layer2]
 
     def quantize_activation(self, input, ifTraining, tree, lookup_table):
         # return Quantizer(ifQuantizing, ifTraining, tree, lookup_table).apply(input)

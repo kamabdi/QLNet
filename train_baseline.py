@@ -7,8 +7,10 @@ from torchvision import datasets, transforms
 
 
 from load_data import get_data
-from baseline_model import BS_Net
-from train_utils import train, test
+# from baseline_model import BS_Net
+# from train_utils import train, test
+from qlnet_model_quantized import BS_Net
+from train_utils_quantized import train, test
 from  training_parameters import get_params
 
 args = get_params()
@@ -25,9 +27,10 @@ test_loader = get_data(args, dataset='mnist', ifTrain=False)
 model = BS_Net()
 model.to(device)
 
-train(model,train_loader, test_loader, args.epochs + 1, args.lr, device)
+args.out_name = 'mnist_baseline.pth'
+# train(model,train_loader, test_loader, args, device)
 
-# model = BS_Net()
-# model.load_state_dict(torch.load('mnist_baseline.pth'))
-# model.to(device).eval()
-# test(model, test_loader, device)
+model = BS_Net()
+model.load_state_dict(torch.load('mnist_baseline.pth'))
+model.to(device).eval()
+test(model, test_loader, device,  0, None)
