@@ -60,8 +60,8 @@ def train(net, trainloader, testloader, args, device):
             torch.save(net.state_dict(), './models/' + args.out_name)
             best = score
         print("---------------------------")
+        scheduler.step()
     print('Finished Training')
-    scheduler.step()
     return net
 
 def test(net, testloader, device, layer, tree):
