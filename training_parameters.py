@@ -19,5 +19,19 @@ def get_params():
                         help='random seed (default: 1)')
     parser.add_argument('--log-interval', type=int, default=10, metavar='N',
                         help='how many batches to wait before logging training status')
+    parser.add_argument('--layer', type=int, default=0, metavar='N',
+                        help='how many batches to wait before logging training status')
+    parser.add_argument('-i', "--pretrained_model", default='./models/mnist_baseline.pth')
+    parser.add_argument('--dataset', default='mnist')
+    parser.add_argument('--model', default='lenet')
+    parser.add_argument('--max_depth', type=int, default=1, metavar='D',
+                        help='depth of dictionary tree')
+    parser.add_argument('--n_cl', type=int, default=10, metavar='D',
+                        help='depth of dictionary tree')
+    parser.add_argument('--num_classes', type=int, default=10, metavar='D',
+                        help='depth of dictionary tree')
+    parser.add_argument('--num_workers', type=int, default=4, metavar='D',
+                            help='number of thread for data processing')
+    parser.add_argument('--save_activations', action='store_true', help="compute activations")
     args = parser.parse_args()
     return args

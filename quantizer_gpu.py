@@ -70,7 +70,6 @@ def quantize(input, tree):
         p = 0 # padding, as we want to approximate exact input, we dont add any padding
         kernel= 1
         stride = 1
-
         batch_size = input.size(0)
         depth = input.size(1)
         m = input.size(3) # width and height of the filter
@@ -95,6 +94,8 @@ def quantize(input, tree):
                 patch = patch.contiguous().view(batch_size, 1, kernel*kernel*depth)
                 center, center_id = ht.predict(tree, patch)
                 center = center.view([batch_size, depth, kernel, kernel])
+
                 output[:, :, xx_step:xx_step+kernel, yy_stride:yy_stride+kernel] = center
+
                 
         return output

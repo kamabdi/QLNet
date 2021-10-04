@@ -27,7 +27,8 @@ def choose_patch(data):
     if xdim < kernel:
         kernel = 2
     selected_data = []
-    num_regions = 4
+    num_regions = 20
+    # num_regions = 10
     for i in range(0,n):
         for j in range(0,num_regions):
             x = randint(0,xdim-kernel)
@@ -61,7 +62,8 @@ def choose_single_patch(data):
 def read_data(data_folder):
     selected_data = []
     for file in os.listdir(data_folder):
-        if file.endswith("0.npy")  or file.endswith("2.npy")or file.endswith("3.npy")or file.endswith("4.npy") or file.endswith("5.npy"):
+        # if file.endswith("0.npy")  or file.endswith("2.npy")or file.endswith("3.npy") or file.endswith("4.npy") or file.endswith("5.npy"):
+        # if file.endswith("0.npy") :
             data_var = t.load(os.path.join(data_folder, file))
             selected_data.append(data_var)
     return selected_data

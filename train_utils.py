@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 from torch.autograd import Variable
 import torch.optim as optim
+import numpy as np
 
 def accuracy(output, target, topk=(1,)):
     """Computes the precision@k for the specified values of k"""
@@ -15,7 +16,7 @@ def accuracy(output, target, topk=(1,)):
     res = []
     for k in topk:
         correct_k = correct[:k].view(-1).sum(0)
-        res.append(100*correct_k/batch_size)
+        res.append(100*np.true_divide(correct_k.cpu().numpy(), batch_size))
     return res
 
 def adjust_learning_rate(lr, optimizer, epoch):
@@ -24,13 +25,17 @@ def adjust_learning_rate(lr, optimizer, epoch):
     for param_group in optimizer.param_groups:
         param_group['lr'] = lr
 
-def train(net,trainloader, testloader, num_epoch, lr, device):
+
+def train(net, trainloader, testloader, args, device):
+    num_epoch = args.epochs
+    lr = args.lr
     criterion = nn.CrossEntropyLoss() #
     optimizer = optim.SGD(net.parameters(), lr=lr, momentum=0.9, weight_decay=5e-4)
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=200)
     best = 0.0
     for epoch in range(num_epoch): # loop over the dataset multiple times
         net.train()
-        adjust_learning_rate(lr, optimizer, epoch)
+#        adjust_learning_rate(lr, optimizer, epoch)
         running_loss = 0.0
         for i, (inputs, labels) in enumerate(trainloader, 0):
             inputs = inputs.to(device)
@@ -38,7 +43,7 @@ def train(net,trainloader, testloader, num_epoch, lr, device):
             # zero the parameter gradients
             optimizer.zero_grad()
             # forward + backward + optimize
-            outputs = net(inputs)
+            outputs, _ = net(inputs)
             loss = criterion(outputs, labels)
             loss.backward()
             optimizer.step()
@@ -49,16 +54,17 @@ def train(net,trainloader, testloader, num_epoch, lr, device):
                                 epoch, i * len(inputs), len(trainloader.dataset),
                                 100. * i / len(trainloader), loss.item(), prec1.item()))
         print("----- Validation ----------")
-        score = test(net, testloader, device)
+        score = test(net, testloader, device, 0, None)
         if score > best:
             print("Saving model")
-            torch.save(net.state_dict(), 'mnist_baseline.pth')
+            torch.save(net.state_dict(), './models/' + args.out_name)
             best = score
         print("---------------------------")
     print('Finished Training')
+    scheduler.step()
     return net
 
-def test(net, testloader, device):
+def test(net, testloader, device, layer, tree):
     net.eval()
     correct = 0.0
     total = 0.0
@@ -66,7 +72,7 @@ def test(net, testloader, device):
     for (images, labels) in testloader:
         images, labels = images.to(device), labels.to(device)
         with torch.no_grad():
-            outputs = net(images)
+            outputs, _ = net(images)
         _, predicted = torch.max(outputs.data, 1)
         total += labels.size(0)
         correct += (predicted == labels).sum()

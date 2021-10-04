@@ -1,5 +1,9 @@
 activations/*
 data/*
+models/*
+kmeans_pytorch/*
+dictionary/*
+backup/*
 *.csv
 *.eps
 # Byte-compiled / optimized / DLL files
@@ -8,6 +12,8 @@ __pycache__/
 *$py.class
 *.pth
 tree*
+*.pdf
+
 
 # C extensions
 *.so
