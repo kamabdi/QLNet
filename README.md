@@ -1,6 +1,4 @@
-to train the model run QLNet.ipynb in Colab
-
-or 
+# Training 
 
 ```bash
 python train_baseline.py
